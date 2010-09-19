@@ -1,0 +1,8 @@
+def build(bld):
+    pkg = bld.new_task_gen(
+        features = 'go gopackage',
+        source = bld.path.ant_glob('*.go', excl='*_test.go'),
+        target = '../'+str(bld.path),
+        name = str(bld.path),
+        uselib_local = ['c'],
+    )
