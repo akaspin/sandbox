@@ -4,5 +4,5 @@ def build(bld):
         source = bld.path.ant_glob('*.go', excl='*_test.go'),
         target = '../'+str(bld.path),
         name = str(bld.path),
-        uselib_local = ['c'],
+        use = ['c'],
     )

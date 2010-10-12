@@ -3,7 +3,7 @@ def build(bld):
     main = bld.new_task_gen(
         features = 'go goprogram',
         target   = 'bin/main',
-        uselib_local = ['a', 'b'],
+        use = ['a', 'b'],
         source   = 'main.go',
         chmod = 0755,
         name = 'main'
