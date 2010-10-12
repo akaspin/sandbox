@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-# grt - Go Ray Tracer
 # By: Tom Wambold <tom5760@gmail.com>
 # wscript - Waf build script
+
+import Logs
+Logs.colors_lst['USE'] = False
 
 top = 'src'
 out = 'build'
