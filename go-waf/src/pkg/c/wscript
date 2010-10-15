@@ -1,7 +1,0 @@
-def build(ctx):
-    ctx(
-        features = 'go gopackage',
-        source = ctx.path.ant_glob('*.go', excl='*_test.go'),
-        target = '../'+str(ctx.path),
-        name = str(ctx.path)
-    )
