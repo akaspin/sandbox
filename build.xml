@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Ant script for help remote building with WAF with Eclipse
+-->
+<project name="waf" default="build">
+	<basename property="project.name" file="${basedir}" />
+	<property file="build.properties" />
+	<property name="run.pre"
+	          value="source .profile; cd ${run.home}/${project.name};${run.clean}"
+	          description="Initial sequence" />
+
+	<!-- Macro for sshexec operationss -->
+	<macrodef name="do-ssh">
+		<attribute name="command" />
+		<element name="args" optional="true" />
+		<sequential>
+			<sshexec host="dev"
+			         username="${ssh.login}"
+			         password="${ssh.pass}"
+			         command="${run.pre}@{command}" />
+		</sequential>
+	</macrodef>
+
+	<target name="distclean" description="For clean">
+		<do-ssh command="python waf distclean" />
+	</target>
+
+	<target name="after-clean" description="For clean">
+
+	</target>
+
+	<target name="configure"
+	        description="For configure"
+	        unless="configure.present">
+		<do-ssh command="python waf configure" />
+	</target>
+
+	<target name="clean" if="build.failed" description="For clean">
+		<do-ssh command="python waf clean" />
+	</target>
+
+	<target name="build" description="For build" unless="build.present">
+		<available file="${basedir}/.lock-wafbuild"
+		           property="configure.present" />
+		<antcall target="configure">
+		</antcall>
+		<sshexec host="dev"
+		         username="${ssh.login}"
+		         password="${ssh.pass}"
+		         command="${run.pre}python waf build"
+		         failonerror="false"
+		         outputproperty="build.stat" />
+		<condition property="build.failed">
+			<contains string="${build.stat}" substring="Build failed" />
+		</condition>
+		<antcall target="clean">
+		</antcall>
+		<fail if="build.failed" />
+	</target>
+
+	<target name="execute" description="For run">
+		<available file="${basedir}/${run.command}" property="build.present" />
+		<antcall target="build">
+		</antcall>
+		<do-ssh command="${run.command}" />
+	</target>
+</project>

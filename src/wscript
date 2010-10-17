@@ -1,0 +1,8 @@
+def build(bld):
+    main = bld.new_task_gen(
+        features = 'go goprogram',
+        target   = 'bin/main',
+        source = 'main.go',
+        chmod = 0755,
+        name = 'main'
+    )
