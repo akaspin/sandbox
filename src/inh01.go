@@ -1,20 +1,21 @@
 package main
 
 import (
-    "log"
+   "log"
+   "reflect"
 )
 
-// Tester interface
-type Tester interface {
-    Run(msg string)
+type Doer interface {
+    Init(msg string)
+    do()
 }
 
-// Root
 type Root struct {
     msg string
 }
-func (self *Root) Run(msg string) {
+func (self *Root) Init(msg string) {
     self.msg = msg
+    log.Print(reflect.Typeof(self))
     self.do()
 }
 func (self *Root) do() {
@@ -23,16 +24,20 @@ func (self *Root) do() {
 
 // Inherit
 type In1 struct {
-    *Root
+    Root
 }
 func (self *In1) do() {
     log.Print("In:", self.msg)
 }
 
+func Handle(h Doer, msg string ) {
+   h.Init(msg)
+}
+
 func main () {
-    root := new(Root)
-    in1 := &In1{&Root{}} 
+    root := Root{}
+    in := In1{} 
     
-    in1.Run("one")
-    root.Run("root")
+    Handle(&root, "root")
+    Handle(&in, "one")
 }

@@ -5,40 +5,58 @@ import (
 )
 
 // Tester interface
-type Tester interface {
-    Run(msg string) 
+type Doer interface {
+    Init(msg string) 
     do1()
     do2()
 }
 
 // Root
 type Root struct {
-    self Tester
     msg string
+    self Doer
 }
-func (self Root) Run(msg string) {
-    self.msg = msg
-    self.self.do1()
+func (this *Root) Init(msg string ) {
+    this.msg = msg
 }
-func (self *Root) do1() {
-    log.Print("Root:", self.msg)
+func (this *Root) do1() {
+    log.Print("Root:", this.msg)
 }
-func (self *Root) do2() {
-    self.do1()
+func (this *Root) do2() {
+    this.self.do1()
 }
 
-// Inherit
+// Inherit1
 type In1 struct {
     Root
 }
-func (self *In1) do1() {
-    log.Print("In1:", self.msg)
+func (this *In1) Init(msg string ) {
+    this.self = this
+    this.Root.Init(msg)
+}
+func (this *In1) do1() {
+    log.Print("In1:", this.msg)
+}
+
+// Inherit2
+type In2 struct {
+    In1
+}
+func (this *In2) Init(msg string ) {
+    this.self = this
+    this.Root.Init(msg)
+}
+func (this *In2) do1() {
+    log.Print("In2:", this.msg)
 }
 
 func main () {
     in1 := In1{}
-    in1.self = &in1
-    in1.Run("inDo1")
-    in1.do2()
+    in1.Init("inDo1")
 
+    in2 := In2{}
+    in2.Init("inDo2")
+    
+    in1.do2()
+    in2.do2()
 }
