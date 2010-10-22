@@ -4,12 +4,8 @@ import (
     "log"
 )
 
-type Handler interface {
-    Handle()
-}
-
 type Doer interface {
-    Do(*Handler)    // Calls Serv
+    Do(*Handle)    // Calls Serv
     Serv()  // Service function
 }
 
@@ -25,7 +21,7 @@ func (h *Handle) Handle(){
 // Doer one. Not keeps any data. 
 // Calls other self methods only through Handle.D 
 type Do1 struct {}
-func (d *Do1) Do(h *Handler) {
+func (d *Do1) Do(h *Handle) {
     log.Print("Do1", h.Data)
     h.D.Serv()
 }

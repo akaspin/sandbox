@@ -1,62 +1,62 @@
+// works
 package main
 
-import (
+import ( 
     "log"
 )
 
-// Tester interface
-type Doer interface {
-    Init(msg string) 
-    do1()
-    do2()
+type Handler interface {
+    Handle() // Calls Do()
+    Do()
 }
 
-// Root
-type Root struct {
-    msg string
-    self Doer
+// Base handler
+type B struct {
+    self Handler
+    Data string  // Some variable data
 }
-func (this *Root) Init(msg string ) {
-    this.msg = msg
+// Fake constructor
+func (b *B) Init(data string) {
+    b.Data = data
 }
-func (this *Root) do1() {
-    log.Print("Root:", this.msg)
+func (b *B) Handle() {
+    b.self.Do()
 }
-func (this *Root) do2() {
-    this.self.do1()
-}
-
-// Inherit1
-type In1 struct {
-    Root
-}
-func (this *In1) Init(msg string ) {
-    this.self = this
-    this.Root.Init(msg)
-}
-func (this *In1) do1() {
-    log.Print("In1:", this.msg)
+func (b *B) Do() {
+    log.Print("B: ", b.Data)
 }
 
-// Inherit2
-type In2 struct {
-    In1
+// Child
+type C struct {
+    B
 }
-func (this *In2) Init(msg string ) {
-    this.self = this
-    this.Root.Init(msg)
+// Need set self in each child
+func (c *C) Init(data string) {
+    c.B.Init(data)  // Call base fake constructor
+    c.self = c      // set instance
 }
-func (this *In2) do1() {
-    log.Print("In2:", this.msg)
+func (c *C) Do() {
+    log.Print("C1: ", c.Data)
+}
+// Child
+type C1 struct {
+    C
+}
+// Need set self in each child
+func (c *C1) Init(data string) {
+    c.C.Init(data)  // Call base fake constructor
+    c.self = c      // set instance
+}
+func (c *C1) Do() {
+    log.Print("C2: ", c.Data)
 }
 
 func main () {
-    in1 := In1{}
-    in1.Init("inDo1")
-
-    in2 := In2{}
-    in2.Init("inDo2")
+    h := &C{}
+    h.Init("data1")
+    h.Handle()
     
-    in1.do2()
-    in2.do2()
+    h1 := &C1{}
+    h1.Init("data1")
+    h1.Handle()
 }

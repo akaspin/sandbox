@@ -1,43 +1,35 @@
+// Not works
 package main
 
-import (
-   "log"
-   "reflect"
+import ( 
+    "log"
 )
 
-type Doer interface {
-    Init(msg string)
-    do()
+type Handler interface {
+    Handle() // Calls Do()
+    Do()
 }
 
-type Root struct {
-    msg string
+// Base handler
+type B struct {
+    Data string  // Some variable data
 }
-func (self *Root) Init(msg string) {
-    self.msg = msg
-    log.Print(reflect.Typeof(self))
-    self.do()
+func (b *B) Handle() {
+    b.Do()
 }
-func (self *Root) do() {
-    log.Print("Root:", self.msg)
-}
-
-// Inherit
-type In1 struct {
-    Root
-}
-func (self *In1) do() {
-    log.Print("In:", self.msg)
+func (b *B) Do() {
+    log.Print("B: ", b.Data)
 }
 
-func Handle(h Doer, msg string ) {
-   h.Init(msg)
+// Child
+type C struct {
+    B
+}
+func (c *C) Do() {
+    log.Print("C1: ", c.Data)
 }
 
 func main () {
-    root := Root{}
-    in := In1{} 
-    
-    Handle(&root, "root")
-    Handle(&in, "one")
+    h := &C{B{"data"}} // Why not &C{"data"}?
+    h.Handle()
 }
