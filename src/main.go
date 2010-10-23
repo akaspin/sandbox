@@ -1,7 +1,19 @@
-/**  Handler-Doer pattern
- 
-    Based on idea of dynamically created handler that
-    keeps next 
+/**  
+    Output:
+    
+        First handle. Iteration 0
+            Do1-One: 0-1
+            Do1-Two: 0-1-1
+        Second handle. Iteration 0
+            Do1-One: 0-1
+            Do2-Two: 0-1-2
+        First handle. Iteration 1
+            Do1-One: 1-1
+        Some panic on iteration 1
+        Recovered
+        Second handle. Iteration 1
+            Do1-One: 1-1
+            Do2-Two: 1-1-2
 */ 
 
 package main
